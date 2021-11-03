@@ -6,18 +6,27 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 
-const AddCar = (props) => {
+const EditCar = (props) => {
   const [open, setOpen] = useState(false)
   const [car, setCar] = useState({
-    brand:'',
-    model:'',
-    color:'',
-    fuel:'',
-    year:'',
-    price:'',
+    brand: '',
+    model: '',
+    color: '',
+    fuel: '',
+    year: '',
+    price: '',
   })
-  
+
   const handleClickOpen = () => {
+    console.log(props.row)
+    setCar({
+      brand: props.row.data.brand,
+      model: props.row.data.model,
+      color: props.row.data.color,
+      fuel: props.row.data.fuel,
+      year: props.row.data.year,
+      price: props.row.data.price,
+    })
     setOpen(true)
   }
 
@@ -26,63 +35,63 @@ const AddCar = (props) => {
   }
 
   const handleInputChange = event => {
-    setCar({...car, [event.target.name]: event.target.value})
+    setCar({ ...car, [event.target.name]: event.target.value })
   }
 
   const handleSave = () => {
-    props.addCar(car)
+    props.editCar(props.row.value, car)
     handleClose()
     setCar({
-      brand:'',
-      model:'',
-      color:'',
-      fuel:'',
-      year:'',
-      price:'',
+      brand: '',
+      model: '',
+      color: '',
+      fuel: '',
+      year: '',
+      price: '',
     })
   }
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Add Car
+      <Button size='small' onClick={handleClickOpen}>
+        Edit
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Edit Car</DialogTitle>
         <DialogContent>
           <TextField
-            margin="dense"
+            margin='dense'
             name='brand'
             value={car.brand}
             onChange={handleInputChange}
-            label="Brand"
+            label='Brand'
             fullWidth
-            variant="standard"
+            variant='standard'
           />
           <TextField
-            margin="dense"
+            margin='dense'
             name='model'
             value={car.model}
             onChange={handleInputChange}
-            label="Model"
+            label='Model'
             fullWidth
-            variant="standard"
+            variant='standard'
           />
           <TextField
-            margin="dense"
+            margin='dense'
             name='color'
             value={car.color}
             onChange={handleInputChange}
-            label="Color"
+            label='Color'
             fullWidth
-            variant="standard"
+            variant='standard'
           />
           <TextField
-            margin="dense"
+            margin='dense'
             name='fuel'
             value={car.fuel}
             onChange={handleInputChange}
-            label="Fuel"
+            label='Fuel'
             fullWidth
             variant="standard"
           />
@@ -114,4 +123,4 @@ const AddCar = (props) => {
   )
 }
 
-export default AddCar
+export default EditCar

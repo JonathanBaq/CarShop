@@ -5,10 +5,12 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import Button from '@mui/material/Button'
 import Snackbar from '@mui/material/Snackbar'
 import AddCar from './AddCar'
+import EditCar from './EditCar'
 
 const Carlist = () => {
   const [cars, setCars] = useState([])
   const [open, setOpen] = useState(false)
+  const [msg, setMsg] = useState('')
 
   useEffect(() => {
     fetchCars()
@@ -30,6 +32,7 @@ const Carlist = () => {
       fetch(url, { method: 'DELETE' })
         .then(response => {
           if (response.ok) {
+            setMsg('Car deleted')
             setOpen(true)
             fetchCars()
           } else {
@@ -49,8 +52,36 @@ const Carlist = () => {
       body: JSON.stringify(car)
     })
       //Check response in final task! : what code, etc
-      .then(response => fetchCars())
+      .then(response => {
+        if (response.ok) {
+          setMsg('Car added')
+          setOpen(true)
+          fetchCars()
+        } else {
+          alert('Error')
+        }
+      })
       .catch(error => console.error(error))
+  }
+
+  const editCar = (url, car) => {
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(car)
+    })
+    .then(response => {
+      if (response.ok) {
+        setMsg('Car edited')
+        setOpen(true)
+        fetchCars()
+      } else {
+        alert('Error')
+      }
+    })
+    .catch(error => console.error(error))
   }
 
   const columns = [
@@ -66,6 +97,14 @@ const Carlist = () => {
       filter: false,
       width: 120,
       field: '_links.self.href',
+      cellRendererFramework: (params) => <EditCar row={params} editCar={editCar} />
+    },
+    {
+      headerName: '',
+      sortable: false,
+      filter: false,
+      width: 120,
+      field: '_links.self.href',
       cellRendererFramework: (params) => (
         <Button
           color='error'
@@ -75,7 +114,7 @@ const Carlist = () => {
   ]
 
   return (
-    <div>
+    <div style={{marginTop: 20}}>
       <AddCar addCar={addCar} />
       <div className="ag-theme-material" style={{ marginTop: 20, height: 600, width: '90%', margin: 'auto' }}>
         <AgGridReact
@@ -87,11 +126,11 @@ const Carlist = () => {
         >
         </AgGridReact>
       </div>
-      <Snackbar 
-      open={open}
-      message={'Car Deleted Successfully'}//we can use state for message to show different messages at diff places, eg. errors
-      autoHideDuration={4000}
-      onClose={handleClose}
+      <Snackbar
+        open={open}
+        message={msg}//we can use state for message to show different messages at diff places, eg. errors
+        autoHideDuration={4000}
+        onClose={handleClose}
       />
     </div>
   )
